@@ -273,34 +273,79 @@ Plant.prototype.act = function(view) {
     return {type: "grow"};
 };
 
-function PlantEater() {
+function SmartPlantEater() {
   this.energy = 20;
 }
-PlantEater.prototype.act = function(view) {
+SmartPlantEater.prototype.act = function(view) {
   var space = view.find(" ");
   if (this.energy > 60 && space)
     return {type: "reproduce", direction: space};
   var plant = view.find("*");
-  if (plant)
+  if (plant && this.energy < 50)
     return {type: "eat", direction: plant};
   if (space)
     return {type: "move", direction: space};
 };
 
+function Tiger() {
+  this.energy = 30;
+}
+
+Tiger.prototype.act = function(view) {
+  // This is just a dummy behavior
+  var space = view.find(" ");
+  if (this.energy > 40 && space)
+    return {type: "reproduce", direction: space};
+  var prey = view.find("O");
+  if (prey && this.energy < 30)
+    return {type:"eat", direction: prey};
+  var plant = view.find("*");
+  if (plant && this.energy < 50)
+    return {type: "eat", direction: plant};
+  if (space)
+    return {type: "move", direction: space}
+};
+
 var valley = new LifelikeWorld(
-  ["############################",
-   "#####                 ######",
-   "##   ***                **##",
-   "#   *##**         **  O  *##",
-   "#    ***     O    ##**    *#",
-   "#       O         ##***    #",
-   "#                 ##**     #",
-   "#   O       #*             #",
-   "#*          #**       O    #",
-   "#***        ##**    O    **#",
-   "##****     ###***       *###",
-   "############################"],
+  ["#################################",
+   "#####              **  *   ######",
+   "##   ***                     **##",
+   "#   *##**         **  O  *     ##",
+   "#    ***     O    ##**    *     #",
+   "#       O         ##***         #",
+   "#                 ##**          #",
+   "#   O       #*                  #",
+   "#*          #**       O         #",
+   "#***        ##**    O         **#",
+   "##****     ###***       *     ###",
+   "#################################"],
   {"#": Wall,
-   "O": PlantEater,
+   "O": SmartPlantEater,
    "*": Plant}
 );
+
+
+// animateWorld(new LifelikeWorld(
+//   ["####################################################",
+//    "#                 ####         ****              ###",
+//    "#   *  @  ##                 ########       OO    ##",
+//    "#   *    ##        O O                 ****       *#",
+//    "#       ##*                        ##########     *#",
+//    "#      ##***  *         ****                     **#",
+//    "#* **  #  *  ***      #########                  **#",
+//    "#* **  #      *               #   *              **#",
+//    "#     ##              #   O   #  ***          ######",
+//    "#*            @       #       #   *        O  #    #",
+//    "#*                    #  ######                 ** #",
+//    "###          ****          ***                  ** #",
+//    "#       O                        @         O       #",
+//    "#   *     ##  ##  ##  ##               ###      *  #",
+//    "#   **         #              *       #####  O     #",
+//    "##  **  O   O  #  #    ***  ***        ###      ** #",
+//    "###               #   *****                    ****#",
+//    "####################################################"],
+//   {"#": Wall,
+//    "@": Tiger,
+//    "O": SmartPlantEater, // from previous exercise
+//    "*": Plant}
+// ));
